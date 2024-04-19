@@ -4,7 +4,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import tomljanovic.matko.trivianightapp.data.repository.LeaderboardRepositoryImpl
 import tomljanovic.matko.trivianightapp.data.repository.TriviaRepositoryImpl
+import tomljanovic.matko.trivianightapp.domain.repository.LeaderboardRepository
 import tomljanovic.matko.trivianightapp.domain.repository.TriviaRepository
 import javax.inject.Singleton
 
@@ -17,4 +19,10 @@ abstract class RepositoryModule {
     abstract fun bindTriviaRepository(
         triviaRepositoryImpl: TriviaRepositoryImpl
     ): TriviaRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLeaderboardRepository(
+        leaderboardRepositoryImpl: LeaderboardRepositoryImpl
+    ): LeaderboardRepository
 }

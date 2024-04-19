@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import tomljanovic.matko.trivianightapp.domain.repository.TriviaRepository
 import tomljanovic.matko.trivianightapp.util.Resource
 import javax.inject.Inject
@@ -45,12 +44,9 @@ class TriviaViewModel @Inject constructor(
                         triviaState = triviaState.copy(
                             questions = it
                         )
-
-                        Timber.d("Trivia questions: $it")
                     }
                 }
             }
-
         }
     }
 }
