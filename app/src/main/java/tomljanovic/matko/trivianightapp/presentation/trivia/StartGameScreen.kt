@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import tomljanovic.matko.trivianightapp.R
-import tomljanovic.matko.trivianightapp.presentation.trivia.destinations.LeaderBoardDestination
-import tomljanovic.matko.trivianightapp.presentation.trivia.destinations.SetUpPlayerDestination
+import tomljanovic.matko.trivianightapp.presentation.destinations.LeaderboardScreenDestination
+import tomljanovic.matko.trivianightapp.presentation.destinations.SetUpPlayerDestination
 
 @Composable
 @Destination
@@ -51,7 +51,7 @@ fun StartGameScreen(
                 drawableId = R.drawable.img_leaderboard,
                 buttonText = "Leaderboard"
             ) {
-                navigator?.navigate(LeaderBoardDestination)
+                navigator?.navigate(LeaderboardScreenDestination)
             }
         }
     }

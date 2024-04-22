@@ -26,7 +26,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import tomljanovic.matko.trivianightapp.R
-import tomljanovic.matko.trivianightapp.presentation.trivia.destinations.StartGameScreenDestination
+import tomljanovic.matko.trivianightapp.presentation.destinations.StartGameScreenDestination
 
 @Composable
 @Preview
@@ -50,7 +50,7 @@ fun SplashScreen(
             )
         )
         delay(2000L)
-        navigator?.navigate(StartGameScreenDestination())
+        navigator?.navigate(StartGameScreenDestination)
     }
 
     Surface(

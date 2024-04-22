@@ -42,9 +42,8 @@ fun TriviaScreen(
     viewModel: TriviaViewModel = hiltViewModel(),
     maxQuestions: Int = 0
 ) {
-    // Call api with number of questions passed from screen before
     LaunchedEffect(key1 = Unit) {
-        viewModel.getTriviaQuestions(20)
+        viewModel.getTriviaQuestions(maxQuestions)
     }
     val state = viewModel.triviaState
     val activeQuestion = remember {

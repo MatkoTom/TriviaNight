@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import tomljanovic.matko.trivianightapp.R
-import tomljanovic.matko.trivianightapp.presentation.trivia.destinations.TriviaScreenDestination
+import tomljanovic.matko.trivianightapp.presentation.destinations.TriviaScreenDestination
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
