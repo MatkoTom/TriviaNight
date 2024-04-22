@@ -18,15 +18,12 @@ class TriviaViewModel @Inject constructor(
 ) : ViewModel() {
     var triviaState by mutableStateOf(TriviaState())
 
-    init {
-        getTriviaQuestions()
-    }
-
     // Always fetch new data when app gets initialized
-    private fun getTriviaQuestions(
+    fun getTriviaQuestions(
+        numberOfQuestions: Int,
         fetchFromRemote: Boolean = true
     ) = viewModelScope.launch {
-        repo.getTriviaQuestions(fetchFromRemote).collect { result ->
+        repo.getTriviaQuestions(numberOfQuestions, fetchFromRemote).collect { result ->
             when (result) {
                 is Resource.Error -> {
                     result.message?.let {

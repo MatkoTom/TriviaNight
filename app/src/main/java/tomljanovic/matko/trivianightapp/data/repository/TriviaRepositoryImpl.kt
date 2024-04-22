@@ -22,22 +22,25 @@ class TriviaRepositoryImpl @Inject constructor(
 
     private val dao = db.dao
 
-    override fun getTriviaQuestions(fetchFromRemote: Boolean): Flow<Resource<List<Question>>> {
+    override fun getTriviaQuestions(
+        numberOfQuestions: Int,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Question>>> {
         return flow {
             emit(Resource.Loading(isLoading = true))
-            val localQuestions = dao.getLocalQuestions()
             // Use this only if we want to emit old data first
-//            emit(Resource.Success(data = localQuestions.map { it.toQuestion() }))
+//            val localQuestions = dao.getLocalQuestions()
+//            emit(Resource.Success(data = localQuestions.ømap { it.toQuestion() }))
 
-            val isDbEmpty = localQuestions.isEmpty()
-            val shouldLoadFromCache = !isDbEmpty && !fetchFromRemote
-            if (shouldLoadFromCache) {
-                emit(Resource.Loading(isLoading = false))
-                return@flow
-            }
+//            val isDbEmpty = localQuestions.isEmpty()
+//            val shouldLoadFromCache = !isDbEmpty && !fetchFromRemote
+//            if (shouldLoadFromCache) {
+//                emit(Resource.Loading(isLoading = false))
+//                return@flow
+//            }
 
             val remoteQuestions = try {
-                triviaApi.fetchQuestions().results
+                triviaApi.fetchQuestions(numberOfQuestions).results
             } catch (e: HttpException) {
                 e.printStackTrace()
                 emit(Resource.Error(message = "Couldn't load data"))
