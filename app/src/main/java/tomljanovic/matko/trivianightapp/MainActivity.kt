@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
-import tomljanovic.matko.trivianightapp.presentation.trivia.NavGraphs
+import tomljanovic.matko.trivianightapp.presentation.NavGraphs
 import tomljanovic.matko.trivianightapp.ui.theme.TriviaNightAppTheme
 
 @AndroidEntryPoint
