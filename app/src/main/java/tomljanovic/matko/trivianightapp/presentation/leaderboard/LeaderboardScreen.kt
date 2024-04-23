@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,32 +49,33 @@ fun LeaderboardScreen(
 
     ScreenBackground(backgroundId = R.drawable.img_background)
 
-//    val items = listOf(
-//        LeaderboardItem(
-//            score = 0,
-//            name = "Ime prezime"
-//        ),
-//        LeaderboardItem(
-//            score = 0,
-//            name = "Ime prezime"
-//        ),
-//        LeaderboardItem(
-//            score = 0,
-//            name = "Ime prezime"
-//        ),
-//        LeaderboardItem(
-//            score = 0,
-//            name = "Ime prezime"
-//        ),
-//        LeaderboardItem(
-//            score = 0,
-//            name = "Ime prezime"
-//        ),
-//        LeaderboardItem(
-//            score = 0,
-//            name = "Ime prezime"
-//        )
-//    )
+    // Testing data
+    val items = listOf(
+        LeaderboardItem(
+            score = 0,
+            name = "Ime prezime"
+        ),
+        LeaderboardItem(
+            score = 0,
+            name = "Ime prezime"
+        ),
+        LeaderboardItem(
+            score = 0,
+            name = "Ime prezime"
+        ),
+        LeaderboardItem(
+            score = 0,
+            name = "Ime prezime"
+        ),
+        LeaderboardItem(
+            score = 0,
+            name = "Ime prezime"
+        ),
+        LeaderboardItem(
+            score = 0,
+            name = "Ime prezime"
+        )
+    )
 
     Column {
         if (state.isLoading) {
@@ -88,7 +91,7 @@ fun LeaderboardScreen(
             LeaderboardTitle()
             LazyColumn {
                 itemsIndexed(
-                    items = state.items
+                    items = items
                 ) { index, item ->
                     if (index < 3) {
                         TopPlayers(
@@ -143,28 +146,30 @@ fun TopPlayers(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Surface(
             modifier = Modifier
                 .padding(8.dp),
             shape = CircleShape,
-            color = when (place + 1) {
-                0 -> Color(0xFFFFCB00)
-                1 -> Color(0xFFD4D4D4)
-                2 -> Color(0xFFE18A3A)
+            color = when (place) {
+                1 -> Color(0xFFFFCB00)
+                2 -> Color(0xFFD4D4D4)
+                3 -> Color(0xFFE18A3A)
                 else -> Color.White
             }
         ) {
             Text(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                    .wrapContentSize(align = Alignment.Center),
                 text = place.toString(),
-                style = MaterialTheme.typography.titleLarge,
+                fontSize = 18.sp,
                 fontFamily = fontFamily,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                textAlign = TextAlign.Center,
             )
         }
         Text(

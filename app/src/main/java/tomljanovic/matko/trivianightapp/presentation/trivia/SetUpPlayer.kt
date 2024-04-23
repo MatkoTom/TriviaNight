@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -29,17 +28,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import tomljanovic.matko.trivianightapp.R
 import tomljanovic.matko.trivianightapp.presentation.destinations.TriviaScreenDestination
+import tomljanovic.matko.trivianightapp.presentation.leaderboard.LeaderboardViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 @Destination
 @Preview
 fun SetUpPlayer(
-    navigator: DestinationsNavigator? = null
+    navigator: DestinationsNavigator? = null,
+    viewmodel: LeaderboardViewModel = hiltViewModel()
 ) {
     val playerName = remember { mutableStateOf("") }
 
@@ -118,7 +119,8 @@ fun SetUpPlayer(
             ) {
                 navigator?.navigate(
                     TriviaScreenDestination(
-                        maxQuestions = questionNumber.value.toIntOrNull() ?: 10
+                        maxQuestions = questionNumber.value.toIntOrNull() ?: 10,
+                        playerName = playerName.value
                     )
                 )
             }

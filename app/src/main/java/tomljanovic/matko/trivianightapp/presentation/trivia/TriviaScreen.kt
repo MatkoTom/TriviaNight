@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +36,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import tomljanovic.matko.trivianightapp.R
+import tomljanovic.matko.trivianightapp.domain.model.LeaderboardItem
+import tomljanovic.matko.trivianightapp.presentation.destinations.EndGameDestination
+import tomljanovic.matko.trivianightapp.presentation.leaderboard.LeaderboardViewModel
 
 @Composable
 @Destination
@@ -40,16 +46,25 @@ import tomljanovic.matko.trivianightapp.R
 fun TriviaScreen(
     navigator: DestinationsNavigator? = null,
     viewModel: TriviaViewModel = hiltViewModel(),
-    maxQuestions: Int = 0
+    leaderboardViewModel: LeaderboardViewModel = hiltViewModel(),
+    maxQuestions: Int = 0,
+    playerName: String = ""
 ) {
     LaunchedEffect(key1 = Unit) {
         viewModel.getTriviaQuestions(maxQuestions)
     }
     val state = viewModel.triviaState
     val activeQuestion = remember {
-        mutableIntStateOf(1)
+        mutableIntStateOf(0)
     }
     var clickedButtonIndex by remember { mutableIntStateOf(-1) }
+
+    val playerScore = remember {
+        mutableIntStateOf(0)
+    }
+    val isFirstClickCorrect = remember {
+        mutableStateOf(false)
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -58,7 +73,9 @@ fun TriviaScreen(
         ScreenBackground(R.drawable.img_background)
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (state.isLoading) {
@@ -89,22 +106,40 @@ fun TriviaScreen(
                             buttonText = Html.fromHtml(answer).toString(),
                             drawableId = null,
                             buttonColor = when {
-                                index == clickedButtonIndex && answer == state.questions[activeQuestion.intValue].correctAnswer -> Color.Green
-                                index == clickedButtonIndex && answer != state.questions[activeQuestion.intValue].correctAnswer -> Color.Red
+                                index == clickedButtonIndex && answer == state.questions[activeQuestion.intValue].correctAnswer -> {
+                                    isFirstClickCorrect.value = true
+                                    Color.Green
+                                }
+                                index == clickedButtonIndex && answer != state.questions[activeQuestion.intValue].correctAnswer -> {
+                                    isFirstClickCorrect.value = false
+                                    Color.Red
+                                }
                                 else -> Color.White
                             },
                         ) {
+                            if (index == clickedButtonIndex && isFirstClickCorrect.value) playerScore.intValue++
                             clickedButtonIndex = index
                         }
                     }
                     Spacer(modifier = Modifier.weight(1f))
+                    val question = activeQuestion.intValue
                     Text(
-                        text = "Next Question",
+                        text = if (question == state.questions.size - 1) "Finish" else "Next Question ${playerScore.intValue}",
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                             .clickable {
-                                activeQuestion.intValue += 1
-                                clickedButtonIndex = -1
+                                if (question == state.questions.size - 1) {
+                                    leaderboardViewModel.addPlayer(
+                                        LeaderboardItem(
+                                            score = playerScore.intValue,
+                                            name = playerName
+                                        )
+                                    )
+                                    navigator?.navigate(EndGameDestination)
+                                } else {
+                                    activeQuestion.intValue += 1
+                                    clickedButtonIndex = -1
+                                }
                             },
                         style = MaterialTheme.typography.titleLarge
                     )
@@ -133,7 +168,7 @@ fun QuestionToolbar(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Question ${activeQuestion.value} / $maxQuestions",
+                text = "Question ${activeQuestion.value + 1} / $maxQuestions",
                 color = Color(0xFFFFCB00),
                 style = MaterialTheme.typography.titleLarge
             )
