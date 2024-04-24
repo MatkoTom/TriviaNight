@@ -35,7 +35,7 @@ class LeaderboardViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     result.data?.let {
-                        leaderboardState.copy(
+                        leaderboardState = leaderboardState.copy(
                             items = it
                         )
                     }

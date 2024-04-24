@@ -1,6 +1,7 @@
 package tomljanovic.matko.trivianightapp.presentation.leaderboard
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,11 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,6 +36,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import tomljanovic.matko.trivianightapp.R
 import tomljanovic.matko.trivianightapp.domain.model.LeaderboardItem
+import tomljanovic.matko.trivianightapp.presentation.destinations.StartGameScreenDestination
 import tomljanovic.matko.trivianightapp.presentation.trivia.ScreenBackground
 import tomljanovic.matko.trivianightapp.ui.theme.fontFamily
 
@@ -49,35 +52,12 @@ fun LeaderboardScreen(
 
     ScreenBackground(backgroundId = R.drawable.img_background)
 
-    // Testing data
-    val items = listOf(
-        LeaderboardItem(
-            score = 0,
-            name = "Ime prezime"
-        ),
-        LeaderboardItem(
-            score = 0,
-            name = "Ime prezime"
-        ),
-        LeaderboardItem(
-            score = 0,
-            name = "Ime prezime"
-        ),
-        LeaderboardItem(
-            score = 0,
-            name = "Ime prezime"
-        ),
-        LeaderboardItem(
-            score = 0,
-            name = "Ime prezime"
-        ),
-        LeaderboardItem(
-            score = 0,
-            name = "Ime prezime"
-        )
-    )
-
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
         if (state.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -89,9 +69,12 @@ fun LeaderboardScreen(
             }
         } else {
             LeaderboardTitle()
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
                 itemsIndexed(
-                    items = items
+                    items = state.items
                 ) { index, item ->
                     if (index < 3) {
                         TopPlayers(
@@ -106,6 +89,17 @@ fun LeaderboardScreen(
                     }
                 }
             }
+            Text(
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .clickable {
+                        navigator?.navigate(StartGameScreenDestination)
+                    },
+                text = "Back",
+                color = Color.White,
+                fontFamily = fontFamily,
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }
@@ -148,10 +142,11 @@ fun TopPlayers(
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         Surface(
             modifier = Modifier
-                .padding(8.dp),
+                .size(56.dp),
             shape = CircleShape,
             color = when (place) {
                 1 -> Color(0xFFFFCB00)
@@ -161,15 +156,13 @@ fun TopPlayers(
             }
         ) {
             Text(
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-                    .wrapContentSize(align = Alignment.Center),
+                modifier = Modifier.padding(8.dp),
                 text = place.toString(),
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleLarge,
                 fontFamily = fontFamily,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
         Text(
@@ -180,10 +173,11 @@ fun TopPlayers(
             color = Color.White,
             fontFamily = fontFamily,
             style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Normal
         )
         Text(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(end = 16.dp),
             text = leaderBoardPlayer.score.toString(),
             color = Color(0xFFFFCB00),
             fontFamily = fontFamily,
@@ -213,19 +207,21 @@ fun OtherPlayers(
             OtherPlayersText(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
-                text = place.toString()
+                text = place.toString(),
+                isBolded = true
             )
 
             OtherPlayersText(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 8.dp),
-                text = leaderBoardPlayer.name
+                text = leaderBoardPlayer.name,
             )
 
             OtherPlayersText(
                 modifier = Modifier.padding(16.dp),
-                text = leaderBoardPlayer.score.toString()
+                text = leaderBoardPlayer.score.toString(),
+                isBolded = true
             )
         }
     }
@@ -234,7 +230,8 @@ fun OtherPlayers(
 @Composable
 fun OtherPlayersText(
     modifier: Modifier = Modifier,
-    text: String = ""
+    text: String = "",
+    isBolded: Boolean = false
 ) {
     Text(
         modifier = modifier,
@@ -242,6 +239,6 @@ fun OtherPlayersText(
         color = Color.Black,
         fontSize = 17.sp,
         fontFamily = fontFamily,
-        fontWeight = FontWeight.Bold
+        fontWeight = if (isBolded) FontWeight.Bold else FontWeight.Normal
     )
 }

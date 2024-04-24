@@ -62,7 +62,7 @@ fun TriviaScreen(
     val playerScore = remember {
         mutableIntStateOf(0)
     }
-    val isFirstClickCorrect = remember {
+    val isClicked = remember {
         mutableStateOf(false)
     }
 
@@ -77,6 +77,7 @@ fun TriviaScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             if (state.isLoading) {
                 Box(
@@ -107,24 +108,26 @@ fun TriviaScreen(
                             drawableId = null,
                             buttonColor = when {
                                 index == clickedButtonIndex && answer == state.questions[activeQuestion.intValue].correctAnswer -> {
-                                    isFirstClickCorrect.value = true
+                                    if (!isClicked.value) playerScore.intValue++
+                                    isClicked.value = true
                                     Color.Green
                                 }
+
                                 index == clickedButtonIndex && answer != state.questions[activeQuestion.intValue].correctAnswer -> {
-                                    isFirstClickCorrect.value = false
+                                    isClicked.value = true
                                     Color.Red
                                 }
+
                                 else -> Color.White
                             },
                         ) {
-                            if (index == clickedButtonIndex && isFirstClickCorrect.value) playerScore.intValue++
                             clickedButtonIndex = index
                         }
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     val question = activeQuestion.intValue
                     Text(
-                        text = if (question == state.questions.size - 1) "Finish" else "Next Question ${playerScore.intValue}",
+                        text = if (question == state.questions.size - 1) "Finish" else "Next Question",
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                             .clickable {
@@ -135,10 +138,16 @@ fun TriviaScreen(
                                             name = playerName
                                         )
                                     )
-                                    navigator?.navigate(EndGameDestination)
+                                    navigator?.navigate(
+                                        EndGameDestination(
+                                            maxQuestions = maxQuestions,
+                                            score = playerScore.intValue
+                                        )
+                                    )
                                 } else {
                                     activeQuestion.intValue += 1
                                     clickedButtonIndex = -1
+                                    isClicked.value = false
                                 }
                             },
                         style = MaterialTheme.typography.titleLarge
@@ -168,7 +177,11 @@ fun QuestionToolbar(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Question ${activeQuestion.value + 1} / $maxQuestions",
+                text = if (activeQuestion.value < maxQuestions) {
+                    "Question ${activeQuestion.value + 1} / $maxQuestions"
+                } else {
+                    "Question ${activeQuestion.value} / $maxQuestions"
+                },
                 color = Color(0xFFFFCB00),
                 style = MaterialTheme.typography.titleLarge
             )
