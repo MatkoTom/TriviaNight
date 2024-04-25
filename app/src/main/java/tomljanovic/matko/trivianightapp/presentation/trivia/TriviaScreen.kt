@@ -36,9 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import tomljanovic.matko.trivianightapp.R
-import tomljanovic.matko.trivianightapp.domain.model.LeaderboardItem
 import tomljanovic.matko.trivianightapp.presentation.destinations.EndGameDestination
-import tomljanovic.matko.trivianightapp.presentation.leaderboard.LeaderboardViewModel
 
 @Composable
 @Destination
@@ -46,14 +44,15 @@ import tomljanovic.matko.trivianightapp.presentation.leaderboard.LeaderboardView
 fun TriviaScreen(
     navigator: DestinationsNavigator? = null,
     viewModel: TriviaViewModel = hiltViewModel(),
-    leaderboardViewModel: LeaderboardViewModel = hiltViewModel(),
     maxQuestions: Int = 0,
     playerName: String = ""
 ) {
     LaunchedEffect(key1 = Unit) {
         viewModel.getTriviaQuestions(maxQuestions)
     }
+
     val state = viewModel.triviaState
+
     val activeQuestion = remember {
         mutableIntStateOf(0)
     }
@@ -132,16 +131,11 @@ fun TriviaScreen(
                             .padding(bottom = 16.dp)
                             .clickable {
                                 if (question == state.questions.size - 1) {
-                                    leaderboardViewModel.addPlayer(
-                                        LeaderboardItem(
-                                            score = playerScore.intValue,
-                                            name = playerName
-                                        )
-                                    )
                                     navigator?.navigate(
                                         EndGameDestination(
                                             maxQuestions = maxQuestions,
-                                            score = playerScore.intValue
+                                            score = playerScore.intValue,
+                                            playerName = playerName
                                         )
                                     )
                                 } else {

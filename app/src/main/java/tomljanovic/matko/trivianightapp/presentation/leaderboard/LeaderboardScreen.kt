@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -26,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -135,8 +135,15 @@ fun LeaderboardTitle() {
 @Preview
 fun TopPlayers(
     leaderBoardPlayer: LeaderboardItem = LeaderboardItem(score = 0, name = "Test"),
-    place: Int = 0
+    place: Int = 1
 ) {
+    val surfaceSize = when (place) {
+        1 -> 56.dp
+        2 -> 48.dp
+        3 -> 40.dp
+        else -> 40.dp
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -144,31 +151,34 @@ fun TopPlayers(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Surface(
-            modifier = Modifier
-                .size(56.dp),
-            shape = CircleShape,
-            color = when (place) {
-                1 -> Color(0xFFFFCB00)
-                2 -> Color(0xFFD4D4D4)
-                3 -> Color(0xFFE18A3A)
-                else -> Color.White
-            }
+        Column(
+            modifier = Modifier.size(56.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = place.toString(),
-                style = MaterialTheme.typography.titleLarge,
-                fontFamily = fontFamily,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
+            Surface(
+                modifier = Modifier
+                    .size(surfaceSize),
+                shape = CircleShape,
+                color = when (place) {
+                    1 -> Color(0xFFFFCB00)
+                    2 -> Color(0xFFD4D4D4)
+                    3 -> Color(0xFFE18A3A)
+                    else -> Color.White
+                }
+            ) {
+                Text(
+                    modifier = Modifier.wrapContentSize(),
+                    text = place.toString(),
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                )
+            }
         }
         Text(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 8.dp),
+                .padding(start = 16.dp),
             text = leaderBoardPlayer.name,
             color = Color.White,
             fontFamily = fontFamily,
