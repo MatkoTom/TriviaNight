@@ -59,7 +59,7 @@ fun EndGame(
         QuestionToolbar(
             modifier = Modifier,
             activeQuestion = doneQuestion,
-            maxQuestions = maxQuestions
+            numberOfQuestions = maxQuestions
         )
 
         Column(

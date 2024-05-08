@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 import tomljanovic.matko.trivianightapp.R
 import tomljanovic.matko.trivianightapp.presentation.destinations.EndGameDestination
 
@@ -44,11 +45,11 @@ import tomljanovic.matko.trivianightapp.presentation.destinations.EndGameDestina
 fun TriviaScreen(
     navigator: DestinationsNavigator? = null,
     viewModel: TriviaViewModel = hiltViewModel(),
-    maxQuestions: Int = 0,
+    numberOfQuestions: Int = 0,
     playerName: String = ""
 ) {
     LaunchedEffect(key1 = Unit) {
-        viewModel.getTriviaQuestions(maxQuestions)
+        viewModel.getTriviaQuestions(numberOfQuestions)
     }
 
     val state = viewModel.triviaState
@@ -90,7 +91,7 @@ fun TriviaScreen(
             } else {
                 QuestionToolbar(
                     modifier = Modifier,
-                    maxQuestions = maxQuestions,
+                    numberOfQuestions = numberOfQuestions,
                     activeQuestion = activeQuestion
                 )
                 if (state.questions.isNotEmpty()) {
@@ -133,7 +134,7 @@ fun TriviaScreen(
                                 if (question == state.questions.size - 1) {
                                     navigator?.navigate(
                                         EndGameDestination(
-                                            maxQuestions = maxQuestions,
+                                            maxQuestions = numberOfQuestions,
                                             score = playerScore.intValue,
                                             playerName = playerName
                                         )
@@ -146,6 +147,8 @@ fun TriviaScreen(
                             },
                         style = MaterialTheme.typography.titleLarge
                     )
+                } else {
+                    Timber.d("Error: ${state.error}")
                 }
             }
         }
@@ -156,7 +159,7 @@ fun TriviaScreen(
 fun QuestionToolbar(
     modifier: Modifier = Modifier,
     activeQuestion: MutableState<Int> = mutableIntStateOf(0),
-    maxQuestions: Int,
+    numberOfQuestions: Int,
 ) {
     Surface(
         modifier = modifier
@@ -171,10 +174,10 @@ fun QuestionToolbar(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = if (activeQuestion.value < maxQuestions) {
-                    "Question ${activeQuestion.value + 1} / $maxQuestions"
+                text = if (activeQuestion.value < numberOfQuestions) {
+                    "Question ${activeQuestion.value + 1} / $numberOfQuestions"
                 } else {
-                    "Question ${activeQuestion.value} / $maxQuestions"
+                    "Question ${activeQuestion.value} / $numberOfQuestions"
                 },
                 color = Color(0xFFFFCB00),
                 style = MaterialTheme.typography.titleLarge

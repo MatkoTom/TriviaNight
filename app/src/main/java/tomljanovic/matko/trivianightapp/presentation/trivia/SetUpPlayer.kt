@@ -119,7 +119,7 @@ fun SetUpPlayer(
             ) {
                 navigator?.navigate(
                     TriviaScreenDestination(
-                        maxQuestions = questionNumber.value.toIntOrNull() ?: 10,
+                        numberOfQuestions = questionNumber.value.toIntOrNull() ?: 10,
                         playerName = playerName.value
                     )
                 )

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 import tomljanovic.matko.trivianightapp.R
 import tomljanovic.matko.trivianightapp.domain.model.LeaderboardItem
 import tomljanovic.matko.trivianightapp.presentation.destinations.StartGameScreenDestination
@@ -68,26 +69,30 @@ fun LeaderboardScreen(
                 )
             }
         } else {
-            LeaderboardTitle()
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                itemsIndexed(
-                    items = state.items
-                ) { index, item ->
-                    if (index < 3) {
-                        TopPlayers(
-                            leaderBoardPlayer = item,
-                            place = index + 1
-                        )
-                    } else {
-                        OtherPlayers(
-                            leaderBoardPlayer = item,
-                            place = index + 1
-                        )
+            if (state.items.isNotEmpty()) {
+                LeaderboardTitle()
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    itemsIndexed(
+                        items = state.items
+                    ) { index, item ->
+                        if (index < 3) {
+                            TopPlayers(
+                                leaderBoardPlayer = item,
+                                place = index + 1
+                            )
+                        } else {
+                            OtherPlayers(
+                                leaderBoardPlayer = item,
+                                place = index + 1
+                            )
+                        }
                     }
                 }
+            } else {
+                Timber.d("Error")
             }
             Text(
                 modifier = Modifier
