@@ -7,7 +7,7 @@ import androidx.room.Query
 
 @Dao
 interface LeaderboardDao {
-    @Query("SELECT * FROM leaderboardentity ORDER BY score")
+    @Query("SELECT * FROM leaderboardentity ORDER BY score DESC")
     suspend fun getLocalLeaderboard(): List<LeaderboardEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

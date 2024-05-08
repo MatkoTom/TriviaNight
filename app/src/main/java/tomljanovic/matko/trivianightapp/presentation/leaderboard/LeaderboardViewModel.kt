@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import tomljanovic.matko.trivianightapp.domain.model.LeaderboardItem
 import tomljanovic.matko.trivianightapp.domain.repository.LeaderboardRepository
 import tomljanovic.matko.trivianightapp.util.Resource
 import javax.inject.Inject
@@ -34,13 +35,17 @@ class LeaderboardViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     result.data?.let {
-                        leaderboardState.copy(
+                        leaderboardState = leaderboardState.copy(
                             items = it
                         )
                     }
                 }
             }
         }
+    }
+
+    fun addPlayer(player: LeaderboardItem) = viewModelScope.launch {
+        repo.addToLeaderboard(leaderboardItem = player)
     }
 
     fun clearLeaderboard() = viewModelScope.launch {
